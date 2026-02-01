@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #fff;
+            overflow: hidden; /* Prevents scrollbars when button moves */
+        }
+
+        /* The Google-style Logo */
+        .logo {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: -3px;
+            user-select: none;
+        }
+        .blue { color: #4285F4; }
+        .red { color: #EA4335; }
+        .yellow { color: #FBBC05; }
+        .green { color: #34A853; }
+
+        /* The Search Bar Box */
+        .search-container {
+            width: 100%;
+            max-width: 580px;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+        .search-bar {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 16px;
+            color: #202124;
+            box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+        }
+        .search-bar:hover {
+            box-shadow: 0 1px 6px rgba(32,33,36,0.28), 0 2px 4px rgba(32,33,36,0.1); /* Slight shadow lift */
+        }
+        
+        /* Icons inside search bar */
+        .search-icon {
+            color: #9aa0a6;
+            margin-right: 15px;
+        }
+        .mic-icon {
+            margin-left: auto;
+            width: 24px; 
+            height: 24px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/e8/Google_mic.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+
+        /* Buttons Area */
+        .buttons {
+            margin-top: 10px;
+            display: flex;
+            gap: 12px;
+            position: relative; /* Needed for moving the button */
+        }
+        
+        button {
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            border-radius: 4px;
+            color: #3c4043;
+            font-family: arial,sans-serif;
+            font-size: 14px;
+            margin: 0 4px;
+            padding: 0 16px;
+            line-height: 36px;
+            height: 36px;
+            min-width: 54px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        button:hover {
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            background-color: #f8f9fa;
+            border: 1px solid #dadce0;
+            color: #202124;
+        }
+
+        /* The "Yes" Button Style */
+        #yesBtn {
+            font-weight: bold;
+            color: #fff;
+            background-color: #4285F4; /* Google Blue */
+            border: 1px solid #4285F4;
+        }
+        #yesBtn:hover {
+            background-color: #357ae8;
+        }
+
+        /* The "No" Button Style */
+        #noBtn {
+            position: relative; /* Allows movement */
+            transition: all 0.2s ease;
+        }
+
+        /* Success Message Overlay (Hidden by default) */
+        #success-msg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            text-align: center;
+        }
+        #success-msg h1 {
+            font-size: 50px;
+            color: #EA4335;
+        }
+        #success-msg p {
+            font-size: 24px;
+            color: #555;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .logo { font-size: 50px; }
+            .search-container { max-width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <span class="blue">V</span><span class="red">a</span><span class="yellow">l</span><span class="blue">e</span><span class="green">n</span><span class="red">t</span><span class="blue">i</span><span class="yellow">n</span><span class="red">e</span>
+    </div>
+
+    <div class="search-container">
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <span id="typing-text">Will you be my Valentine?</span>
+            <div class="mic-icon"></div>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes, I will!</button>
+        <button id="noBtn">No, thanks</button>
+    </div>
+
+    <div id="success-msg">
+        <h1>💖 YAY! 💖</h1>
+        <p>Best search result ever!</p>
+        <div style="font-size:100px;">🥰</div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const successMsg = document.getElementById('success-msg');
+
+        // Function to move the "No" button
+        function moveButton() {
+            // Get screen dimensions
+            const maxWidth = window.innerWidth - noBtn.offsetWidth;
+            const maxHeight = window.innerHeight - noBtn.offsetHeight;
+
+            // Generate random positions
+            const randomX = Math.random() * maxWidth;
+            const randomY = Math.random() * maxHeight;
+
+            // Apply new position (using fixed to break out of flex container)
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Run away on hover (desktop) or touch (mobile)
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton);
+
+        // Success Action
+        yesBtn.addEventListener('click', () => {
+            successMsg.style.display = 'flex';
+            
+            // Optional: Add simple emoji confetti
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '-10px';
+                heart.style.fontSize = Math.random() * 30 + 10 + 'px';
+                heart.style.animation = 'fall 3s linear';
+                document.body.appendChild(heart);
+                
+                // Remove heart after animation
+                setTimeout(() => heart.remove(), 3000);
+            }, 100);
+        });
+
+        // Add animation style for hearts
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fall {
+                to { transform: translateY(100vh); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+
